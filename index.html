@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechStore - Premium Electronics & Gadgets</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50">
+    <!-- Notification -->
+    <div id="notification" class="notification bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+        <span id="notificationText">Item added to cart!</span>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-2xl font-bold text-purple-600">TechStore</h1>
+                    <nav class="hidden md:flex space-x-6">
+                        <a href="#" onclick="showSection('home')"
+                            class="text-gray-700 hover:text-purple-600 font-medium">Home</a>
+                        <a href="#" onclick="showSection('products')"
+                            class="text-gray-700 hover:text-purple-600 font-medium">Products</a>
+                        <a href="#" onclick="showSection('categories')"
+                            class="text-gray-700 hover:text-purple-600 font-medium">Categories</a>
+                        <a href="#" onclick="showSection('about')"
+                            class="text-gray-700 hover:text-purple-600 font-medium">About</a>
+                    </nav>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- Search Bar -->
+                    <div class="hidden lg:flex items-center bg-gray-100 rounded-full px-4 py-2">
+                        <input type="text" id="searchInput" placeholder="Search products..."
+                            class="bg-transparent outline-none w-64">
+                        <i class="fas fa-search text-gray-500 ml-2"></i>
+                    </div>
+
+                    <!-- User Actions -->
+                    <button onclick="openModal('cartModal')" class="relative text-gray-700 hover:text-purple-600">
+
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span id="cartCount"
+                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">0</span>
+                    </button>
+
+                    <div id="userActions" class="space-x-2">
+                        <button onclick="openModal('loginModal')"
+                            class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700">Login</button>
+                        <button onclick="openModal('signupModal')"
+                            class="border border-purple-600 text-purple-600 px-4 py-2 rounded-lg hover:bg-purple-50">Sign
+                            Up</button>
+                    </div>
+
+                    <div id="userMenu" class="hidden space-x-2">
+                        <span id="userName" class="text-gray-700 font-medium"></span>
+                        <button onclick="showAdminDashboard()"
+                            class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Admin</button>
+                        <button onclick="logout()"
+                            class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">Logout</button>
+                    </div>
+
+                    <!-- Mobile Menu Toggle -->
+                    <button class="md:hidden" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+        <nav class="container mx-auto px-4 py-4 space-y-2">
+            <a href="#" onclick="showSection('home')"
+                class="block text-gray-700 hover:text-purple-600 font-medium">Home</a>
+            <a href="#" onclick="showSection('products')"
+                class="block text-gray-700 hover:text-purple-600 font-medium">Products</a>
+            <a href="#" onclick="showSection('categories')"
+                class="block text-gray-700 hover:text-purple-600 font-medium">Categories</a>
+            <a href="#" onclick="showSection('about')"
+                class="block text-gray-700 hover:text-purple-600 font-medium">About</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="homeSection" class="section">
+            <!-- Hero Section -->
+            <div class="hero-gradient text-white py-20">
+                <div class="container mx-auto px-4 text-center">
+                    <h2 class="text-5xl md:text-6xl font-bold mb-6">Premium Tech at Your Fingertips</h2>
+                    <p class="text-xl md:text-2xl mb-8 opacity-90">Discover the latest in electronics, gadgets, and
+                        smart devices</p>
+                    <button onclick="showSection('products')"
+                        class="bg-white text-purple-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-gray-100 transition">Shop
+                        Now</button>
+                </div>
+            </div>
+
+            <!-- Featured Products -->
+            <div class="container mx-auto px-4 py-16">
+                <h3 class="text-3xl font-bold text-center mb-12">Featured Products</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="featuredProducts">
+                    <!-- Featured products will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Categories -->
+            <div class="bg-white py-16">
+                <div class="container mx-auto px-4">
+                    <h3 class="text-3xl font-bold text-center mb-12">Shop by Category</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div class="text-center group cursor-pointer" onclick="filterByCategory('smartphones')">
+                            <div
+                                class="bg-purple-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:bg-purple-200 transition">
+                                <i class="fas fa-mobile-alt text-2xl text-purple-600"></i>
+                            </div>
+                            <h4 class="font-semibold">Smartphones</h4>
+                        </div>
+                        <div class="text-center group cursor-pointer" onclick="filterByCategory('laptops')">
+                            <div
+                                class="bg-blue-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:bg-blue-200 transition">
+                                <i class="fas fa-laptop text-2xl text-blue-600"></i>
+                            </div>
+                            <h4 class="font-semibold">Laptops</h4>
+                        </div>
+                        <div class="text-center group cursor-pointer" onclick="filterByCategory('headphones')">
+                            <div
+                                class="bg-green-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:bg-green-200 transition">
+                                <i class="fas fa-headphones text-2xl text-green-600"></i>
+                            </div>
+                            <h4 class="font-semibold">Audio</h4>
+                        </div>
+                        <div class="text-center group cursor-pointer" onclick="filterByCategory('gaming')">
+                            <div
+                                class="bg-red-100 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center group-hover:bg-red-200 transition">
+                                <i class="fas fa-gamepad text-2xl text-red-600"></i>
+                            </div>
+                            <h4 class="font-semibold">Gaming</h4>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover cursor-pointer"
+                            onclick="filterByCategory('accessories')">
+                            <img src="https://placehold.co/400x250/B8B8B8/FFFFFF?text=Accessories"
+                                alt="Tech accessories collection including wireless chargers, phone cases, cables, power banks, and smartwatch bands arranged aesthetically"
+                                class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-2">Accessories</h3>
+                                <p class="text-gray-600 mb-4">Essential accessories for your devices</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-purple-600 font-semibold">From $19</span>
+                                    <i class="fas fa-arrow-right text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover cursor-pointer"
+                            onclick="filterByCategory('smart-home')">
+                            <img src="https://placehold.co/400x250/B8B8B8/FFFFFF?text=Smart+Home"
+                                alt="Smart home devices including Amazon Echo, Google Nest, smart lights, security cameras, and home automation hub in modern living room"
+                                class="w-full h-48 object-cover">
+                            <div class="p-6">
+                                <h3 class="text-xl font-bold mb-2">Smart Home</h3>
+                                <p class="text-gray-600 mb-4">Transform your home with intelligent devices</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-purple-600 font-semibold">From $39</span>
+                                    <i class="fas fa-arrow-right text-purple-600"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Products Section -->
+        <section id="productsSection" class="section hidden">
+            <div class="container mx-auto px-4 py-8">
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Filters Sidebar -->
+                    <div class="lg:w-1/4">
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h3 class="text-xl font-bold mb-4">Filters</h3>
+
+                            <!-- Category Filter -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-2">Category</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="smartphones" onchange="applyFilters()"
+                                            class="category-filter mr-2">
+                                        <span>Smartphones</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="laptops" onchange="applyFilters()"
+                                            class="category-filter mr-2">
+                                        <span>Laptops</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="headphones" onchange="applyFilters()"
+                                            class="category-filter mr-2">
+                                        <span>Headphones</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="gaming" onchange="applyFilters()"
+                                            class="category-filter mr-2">
+                                        <span>Gaming</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="accessories" onchange="applyFilters()"
+                                            class="category-filter mr-2">
+                                        <span>Accessories</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="checkbox" value="smart-home" onchange="applyFilters()"
+                                            class="category-filter mr-2">
+                                        <span>Smart Home</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Price Filter -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-2">Price Range</h4>
+                                <div class="space-y-2">
+                                    <input type="range" id="priceRange" min="0" max="2000" value="2000"
+                                        oninput="document.getElementById('priceValue').textContent = '$' + this.value; applyFilters();"
+                                        class="w-full">
+                                    <div class="flex justify-between text-sm text-gray-600">
+                                        <span>$0</span>
+                                        <span id="priceValue">$2000</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sort Options -->
+                            <div class="mb-6">
+                                <h4 class="font-semibold mb-2">Sort By</h4>
+                                <select id="sortBy" onchange="applyFilters()" class="w-full p-2 border rounded">
+                                    <option value="name-asc">Name (A-Z)</option>
+                                    <option value="name-desc">Name (Z-A)</option>
+                                    <option value="price-low">Price: Low to High</option>
+                                    <option value="price-high">Price: High to Low</option>
+                                    <option value="rating-high">Rating: High to Low</option>
+                                    <option value="rating-low">Rating: Low to High</option>
+                                </select>
+                            </div>
+
+                            <button onclick="clearFilters()"
+                                class="w-full bg-gray-200 text-gray-700 py-2 rounded hover:bg-gray-300">Clear
+                                Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="lg:w-3/4">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold">All Products</h2>
+                            <div class="flex items-center space-x-4">
+                                <span id="productCount" class="text-gray-600">0 products</span>
+                                <div class="flex space-x-2">
+                                    <button onclick="setViewMode('grid')" id="gridViewBtn"
+                                        class="p-2 bg-purple-600 text-white rounded">
+                                        <i class="fas fa-th"></i>
+                                    </button>
+                                    <button onclick="setViewMode('list')" id="listViewBtn"
+                                        class="p-2 bg-gray-200 text-gray-600 rounded">
+                                        <i class="fas fa-list"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Products will be populated by JavaScript -->
+                        </div>
+
+                        <div id="productsLoading" class="hidden text-center py-8">
+                            <div class="loader mx-auto"></div>
+                            <p class="mt-4 text-gray-600">Loading products...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="aboutSection" class="section hidden">
+            <div class="container mx-auto px-4 py-8">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl font-bold text-center mb-8">About TechStore</h2>
+                    <div class="bg-white rounded-lg shadow-lg p-8">
+                        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/e1ffefbb-355a-4771-982b-e0f2eba67008.png"
+                            alt="Modern tech store interior with displays of latest gadgets, professional lighting, and customers browsing electronics"
+                            class="w-full h-64 object-cover rounded-lg mb-6">
+                        <p class="text-lg text-gray-700 mb-6">
+                            TechStore is your premier destination for cutting-edge technology and electronics. Since our
+                            founding in 2018, we've been committed to bringing you the latest innovations from the
+                            world's leading tech brands.
+                        </p>
+                        <p class="text-gray-700 mb-6">
+                            Our mission is-simple: to make technology accessible and affordable for everyone. Whether
+                            you're a tech enthusiast, a professional, or someone looking to upgrade their digital
+                            lifestyle, we have the perfect products for you.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="text-center">
+                                <div
+                                    class="bg-purple-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-shipping-fast text-2xl text-purple-600"></i>
+                                </div>
+                                <h3 class="font-semibold mb-2">Fast Shipping</h3>
+                                <p class="text-gray-600">Free shipping on orders over $50</p>
+                            </div>
+                            <div class="text-center">
+                                <div
+                                    class="bg-green-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-2xl text-green-600"></i>
+                                </div>
+                                <h3 class="font-semibold mb-2">Warranty</h3>
+                                <p class="text-gray-600">2-year warranty on all products</p>
+                            </div>
+                            <div class="text-center">
+                                <div
+                                    class="bg-blue-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-headset text-2xl text-blue-600"></i>
+                                </div>
+                                <h3 class="font-semibold mb-2">24/7 Support</h3>
+                                <p class="text-gray-600">Round-the-clock customer service</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admin Dashboard -->
+        <section id="adminSection" class="section hidden">
+            <div class="flex h-screen bg-gray-100">
+                <!-- Sidebar -->
+                <div id="adminSidebar" class="admin-sidebar bg-white w-64 shadow-lg">
+                    <div class="p-6 border-b">
+                        <h2 class="text-xl font-bold text-gray-800">Admin Dashboard</h2>
+                    </div>
+                    <nav class="mt-6">
+                        <a href="#" onclick="showAdminTab('overview')"
+                            class="admin-tab block px-6 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600 border-r-2 border-purple-600">
+                            <i class="fas fa-chart-line mr-3"></i>Overview
+                        </a>
+                        <a href="#" onclick="showAdminTab('products')"
+                            class="admin-tab block px-6 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                            <i class="fas fa-box mr-3"></i>Products
+                        </a>
+                        <a href="#" onclick="showAdminTab('orders')"
+                            class="admin-tab block px-6 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                            <i class="fas fa-shopping-bag mr-3"></i>Orders
+                        </a>
+                        <a href="#" onclick="showAdminTab('customers')"
+                            class="admin-tab block px-6 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                            <i class="fas fa-users mr-3"></i>Customers
+                        </a>
+                        <a href="#" onclick="showAdminTab('analytics')"
+                            class="admin-tab block px-6 py-3 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
+                            <i class="fas fa-chart-line mr-3"></i>Analytics
+                        </a>
+                    </nav>
+                    <div class="absolute bottom-6 left-6">
+                        <button onclick="showSection('home')" class="text-purple-600 hover:text-purple-700">
+                            <i class="fas fa-arrow-left mr-2"></i>Back to Store
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="flex-1 flex flex-col overflow-hidden">
+                    <!-- Header -->
+                    <header class="bg-white shadow-sm border-b p-4">
+                        <div class="flex items-center justify-between">
+                            <button onclick="toggleAdminSidebar()" class="text-gray-600 hover:text-gray-800">
+                                <i class="fas fa-bars text-xl"></i>
+                            </button>
+                            <h1 id="adminTitle" class="text-2xl font-semibold text-gray-800">Overview</h1>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-gray-600">Welcome, Admin</span>
+                                <button onclick="logout()"
+                                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <!-- Dashboard Content -->
+                    <main class="flex-1 overflow-y-auto p-6">
+                        <!-- Overview Tab -->
+                        <div id="adminOverview" class="admin-content">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                                <div class="bg-white rounded-lg shadow p-6">
+                                    <div class="flex items-center">
+                                        <div class="p-3 bg-blue-100 rounded-full">
+                                            <i class="fas fa-shopping-cart text-blue-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="text-gray-500 text-sm">Total Sales</h3>
+                                            <p class="text-2xl font-semibold">$45,230</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-lg shadow p-6">
+                                    <div class="flex items-center">
+                                        <div class="p-3 bg-green-100 rounded-full">
+                                            <i class="fas fa-box text-green-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="text-gray-500 text-sm">Products</h3>
+                                            <p class="text-2xl font-semibold">156</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-lg shadow p-6">
+                                    <div class="flex items-center">
+                                        <div class="p-3 bg-yellow-100 rounded-full">
+                                            <i class="fas fa-users text-yellow-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="text-gray-500 text-sm">Customers</h3>
+                                            <p class="text-2xl font-semibold">2,345</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-lg shadow p-6">
+                                    <div class="flex items-center">
+                                        <div class="p-3 bg-purple-100 rounded-full">
+                                            <i class="fas fa-shopping-bag text-purple-600 text-xl"></i>
+                                        </div>
+                                        <div class="ml-4">
+                                            <h3 class="text-gray-500 text-sm">Orders</h3>
+                                            <p class="text-2xl font-semibold">1,234</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-lg shadow p-6">
+                                <h3 class="text-lg font-semibold mb-4">Recent Orders</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm">
+                                        <thead>
+                                            <tr class="border-b">
+                                                <th class="text-left py-2 px-4">Order ID</th>
+                                                <th class="text-left py-2 px-4">Customer</th>
+                                                <th class="text-left py-2 px-4">Product</th>
+                                                <th class="text-left py-2 px-4">Amount</th>
+                                                <th class="text-left py-2 px-4">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Orders will be populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modals for Login, Signup, Product Detail, Cart, and Admin Product Form -->
+        <div id="loginModal" class="modal">
+            <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md slide-in">
+                <h2 class="text-2xl font-bold mb-6 text-center">Login to TechStore</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label for="loginEmail" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="loginEmail"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="your@example.com" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="loginPassword" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="loginPassword"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="********" required>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button type="submit"
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Sign In
+                        </button>
+                        <a href="#" onclick="closeModal('loginModal'); openModal('signupModal');"
+                            class="inline-block align-baseline font-bold text-sm text-purple-600 hover:text-purple-800">
+                            Don't have an account? Sign Up
+                        </a>
+                    </div>
+                </form>
+                <button onclick="closeModal('loginModal')"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+        </div>
+
+        <div id="signupModal" class="modal">
+            <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md slide-in">
+                <h2 class="text-2xl font-bold mb-6 text-center">Create Your TechStore Account</h2>
+                <form onsubmit="handleSignup(event)">
+                    <div class="mb-4">
+                        <label for="signupName" class="block text-gray-700 text-sm font-bold mb-2">Full Name</label>
+                        <input type="text" id="signupName"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="John Doe" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="signupEmail" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                        <input type="email" id="signupEmail"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="your@example.com" required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="signupPassword" class="block text-gray-700 text-sm font-bold mb-2">Password</label>
+                        <input type="password" id="signupPassword"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                            placeholder="********" required>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button type="submit"
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Sign Up
+                        </button>
+                        <a href="#" onclick="closeModal('signupModal'); openModal('loginModal');"
+                            class="inline-block align-baseline font-bold text-sm text-purple-600 hover:text-purple-800">
+                            Already have an account? Login
+                        </a>
+                    </div>
+                </form>
+                <button onclick="closeModal('signupModal')"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+        </div>
+
+        <div id="productDetailModal" class="modal">
+            <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-2xl slide-in relative">
+                <button onclick="closeModal('productDetailModal')"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+                <div id="productDetailContent" class="flex flex-col md:flex-row gap-6">
+                    <!-- Product details will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <div id="cartModal" class="modal">
+            <div class="modal-content relative bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+                <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+                    onclick="closeModal('cartModal')">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+                <h2 class="text-3xl font-bold mb-6">Your Cart</h2>
+                <div id="cartItems" class="space-y-4">
+                </div>
+                <div class="flex justify-between items-center text-xl font-bold border-t pt-4 mt-6">
+                    <span>Total:</span>
+                    <span>$<span id="cartTotal">0.00</span></span>
+                </div>
+                <div class="mt-6 flex justify-end space-x-4">
+                    <button onclick="closeModal('cartModal')"
+                        class="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300">Continue
+                        Shopping</button>
+                    <button onclick="checkout()"
+                        class="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700">Checkout</button>
+                </div>
+            </div>
+        </div>
+        <div id="paymentModal" class="modal">
+    <div class="modal-content relative bg-white p-8 rounded-lg shadow-xl w-full max-w-md slide-in">
+        <button onclick="closeModal('paymentModal')"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+        <h2 class="text-2xl font-bold mb-6 text-center">Payment Options</h2>
+        
+        <form id="paymentForm" onsubmit="handlePayment(event)">
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2">Select a Payment Method</label>
+                <div class="space-y-4">
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="paymentMethod" value="phonepe" checked onchange="togglePaymentFields()">
+                        <span>PhonePe</span>
+                    </label>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="radio" name="paymentMethod" value="debitcard" onchange="togglePaymentFields()">
+                        <span>Debit Card</span>
+                    </label>
+                </div>
+            </div>
+
+            <div id="debitCardFields" class="hidden space-y-4">
+                <div>
+                    <label for="cardNumber" class="block text-gray-700 text-sm font-bold mb-2">Card Number</label>
+                    <input type="text" id="cardNumber" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="•••• •••• •••• ••••">
+                </div>
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="expiry" class="block text-gray-700 text-sm font-bold mb-2">Expiry Date</label>
+                        <input type="text" id="expiry" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="MM/YY">
+                    </div>
+                    <div class="w-1/2">
+                        <label for="cvv" class="block text-gray-700 text-sm font-bold mb-2">CVV</label>
+                        <input type="text" id="cvv" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="•••">
+                    </div>
+                </div>
+            </div>
+
+           <form onsubmit="handlePaymentAndRedirect(event)">
+            <button type="submit" class="w-full mt-6 bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Pay Now
+            </button>
+        </form>
+
+        <div id="paymentSuccessNotification" class="notification bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hidden" aria-live="polite">
+            <span>Payment successful! Thank you for your purchase.</span>
+        </div>
+    </div>
+</div>
+
+
+ </form>
+        <div id="adminProductModal" class="modal">
+            <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md slide-in">
+                <h2 id="adminProductModalTitle" class="text-2xl font-bold mb-6 text-center">Add New Product</h2>
+                <form id="adminProductForm" onsubmit="handleAdminProductForm(event)">
+                    <input type="hidden" id="adminProductId">
+                    <div class="mb-4">
+                        <label for="adminProductName" class="block text-gray-700 text-sm font-bold mb-2">Product
+                            Name</label>
+                        <input type="text" id="adminProductName"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="adminProductPrice" class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+                        <input type="number" id="adminProductPrice" step="0.01"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="adminProductCategory"
+                            class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                        <input type="text" id="adminProductCategory"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="adminProductImage" class="block text-gray-700 text-sm font-bold mb-2">Image
+                            URL</label>
+                        <input type="url" id="adminProductImage"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="adminProductStock" class="block text-gray-700 text-sm font-bold mb-2">Stock</label>
+                        <input type="number" id="adminProductStock"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required>
+                    </div>
+                    <div class="mb-6">
+                        <label for="adminProductDescription"
+                            class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                        <textarea id="adminProductDescription" rows="3"
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            required></textarea>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button type="submit"
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Save Product
+                        </button>
+                    </div>
+                </form>
+                <button onclick="closeModal('adminProductModal')"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6 text-center">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 TechStore. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
